@@ -1,2 +1,2 @@
 # NYportal
-Lavet med AI forslag
+Lavet med AI forslag.

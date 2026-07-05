@@ -1,1 +1,430 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>Portal</title>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#7ec8f5">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #f2f7fb;
+      color: #1f2d3d;
+      padding: 18px;
+      overflow-x: hidden;
+    }
+
+    .topbar {
+      max-width: 900px;
+      margin: 0 auto 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .welcome {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .clock {
+      font-size: 24px;
+      font-weight: bold;
+      background: white;
+      padding: 10px 16px;
+      border-radius: 18px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    }
+
+    .date {
+      max-width: 900px;
+      margin: 0 auto 22px;
+      font-size: 24px;
+      text-align: center;
+    }
+
+    .grid {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 22px;
+    }
+
+    .tile {
+      min-height: 215px;
+      border-radius: 30px;
+      color: white;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      font-weight: bold;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+      text-align: center;
+      padding: 22px;
+      border: none;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .tile:active,
+    .big-button:active,
+    .back-button:active {
+      transform: scale(0.97);
+    }
+
+    .emoji {
+      font-size: 72px;
+      margin-bottom: 12px;
+      line-height: 1;
+    }
+
+    .radio {
+      background: #2f80ed;
+    }
+
+    .telefon {
+      background: #27ae60;
+    }
+
+    .netvaerk {
+      background: #f2994a;
+    }
+
+    .beskeder {
+      background: #9b51e0;
+    }
+
+    .panel {
+      position: fixed;
+      inset: 0;
+      background: #f2f7fb;
+      z-index: 50;
+      padding: 18px;
+      transform: translateY(100%);
+      transition: transform 0.35s ease;
+      overflow-y: auto;
+    }
+
+    .panel.open {
+      transform: translateY(0);
+    }
+
+    .panel-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .panel h1 {
+      text-align: center;
+      font-size: 38px;
+      margin: 16px 0 22px;
+    }
+
+    .appointments {
+      background: white;
+      border-radius: 28px;
+      padding: 20px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.14);
+      min-height: 160px;
+    }
+
+    .appointment {
+      font-size: 30px;
+      padding: 18px 8px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .appointment:last-child {
+      border-bottom: none;
+    }
+
+    .time {
+      font-weight: bold;
+      color: #2f6fed;
+      margin-right: 12px;
+    }
+
+    .empty {
+      font-size: 30px;
+      text-align: center;
+      padding: 32px 10px;
+    }
+
+    .big-button {
+      width: 100%;
+      margin-top: 22px;
+      border: none;
+      border-radius: 24px;
+      padding: 22px;
+      font-size: 30px;
+      font-weight: bold;
+      color: white;
+      background: #2f80ed;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+    }
+
+    .back-button {
+      width: 100%;
+      margin-top: 18px;
+      border: none;
+      border-radius: 24px;
+      padding: 22px;
+      font-size: 30px;
+      font-weight: bold;
+      color: white;
+      background: #555;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+    }
+
+    .loading {
+      font-size: 30px;
+      text-align: center;
+      padding: 32px 10px;
+    }
+
+    @media (max-width: 650px) {
+      body {
+        padding: 14px;
+      }
+
+      .topbar {
+        flex-direction: column;
+        margin-bottom: 10px;
+      }
+
+      .welcome {
+        font-size: 26px;
+        text-align: center;
+      }
+
+      .clock {
+        font-size: 22px;
+      }
+
+      .date {
+        font-size: 21px;
+        margin-bottom: 16px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .tile {
+        min-height: 140px;
+        font-size: 34px;
+        border-radius: 24px;
+      }
+
+      .emoji {
+        font-size: 52px;
+        margin-bottom: 8px;
+      }
+
+      .panel h1 {
+        font-size: 34px;
+      }
+
+      .appointment,
+      .empty,
+      .loading {
+        font-size: 28px;
+      }
+
+      .big-button,
+      .back-button {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    <div class="welcome" id="welcomeText">Velkommen ❤️</div>
+    <div class="clock" id="clock">--:--</div>
+  </div>
+
+  <div class="date" id="dateText"></div>
+
+  <div class="grid">
+
+    <a class="tile radio" href="https://nduru88-wq.github.io/Morsradio/">
+      <div class="emoji">📻</div>
+      Radio
+    </a>
+
+    <a class="tile telefon" href="https://nduru88-wq.github.io/Showcasetlf-opret/">
+      <div class="emoji">☎️</div>
+      Telefon
+    </a>
+
+    <a class="tile netvaerk" href="https://nduru88-wq.github.io/p-r-rende--videohilsen2/">
+      <div class="emoji">👨‍👩‍👧</div>
+      Netværk
+    </a>
+
+    <button class="tile beskeder" onclick="openMessages()">
+      <div class="emoji">💬</div>
+      Beskeder
+    </button>
+
+  </div>
+
+  <div class="panel" id="messagesPanel">
+    <div class="panel-inner">
+
+      <h1>Dagens aftaler</h1>
+
+      <div class="appointments" id="appointmentsBox">
+        <div class="loading">Henter aftaler...</div>
+      </div>
+
+      <button class="big-button" onclick="readAppointments()">🔊 Læs aftaler</button>
+
+      <button class="back-button" onclick="closeMessages()">⬅ Tilbage</button>
+
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbw3dbtjTVkL6GQAQT8o4E_mKA909kr1tERxvSHm_wtGz-4uPn6fxtyX3pQ4gkGOEx4W/exec";
+
+    let appointments = [];
+    let hasAutoRead = false;
+
+    function updateClockAndDate() {
+      const now = new Date();
+
+      document.getElementById("clock").textContent =
+        now.toLocaleTimeString("da-DK", {
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+
+      document.getElementById("dateText").textContent =
+        now.toLocaleDateString("da-DK", {
+          weekday: "long",
+          day: "numeric",
+          month: "long"
+        });
+
+      const hour = now.getHours();
+      let greeting = "Velkommen ❤️";
+
+      if (hour >= 5 && hour < 10) greeting = "Godmorgen ❤️";
+      else if (hour >= 10 && hour < 17) greeting = "Goddag ❤️";
+      else if (hour >= 17 && hour < 22) greeting = "Godaften ❤️";
+      else greeting = "Godnat ❤️";
+
+      document.getElementById("welcomeText").textContent = greeting;
+    }
+
+    async function loadAppointments(autoRead = false) {
+      const box = document.getElementById("appointmentsBox");
+      box.innerHTML = '<div class="loading">Henter aftaler...</div>';
+
+      try {
+        const response = await fetch(API_URL);
+        appointments = await response.json();
+
+        if (!appointments || appointments.length === 0) {
+          box.innerHTML = '<div class="empty">Der er ingen aftaler i dag.</div>';
+        } else {
+          box.innerHTML = appointments.map(item => `
+            <div class="appointment">
+              <span class="time">${item.start}</span>
+              <span>${escapeHtml(item.title)}</span>
+            </div>
+          `).join("");
+        }
+
+        if (autoRead && !hasAutoRead) {
+          hasAutoRead = true;
+          setTimeout(readAppointments, 2000);
+        }
+
+      } catch (error) {
+        box.innerHTML = '<div class="empty">Kunne ikke hente aftaler.</div>';
+      }
+    }
+
+    function openMessages() {
+      document.getElementById("messagesPanel").classList.add("open");
+      loadAppointments(true);
+    }
+
+    function closeMessages() {
+      speechSynthesis.cancel();
+      document.getElementById("messagesPanel").classList.remove("open");
+    }
+
+    function readAppointments() {
+      speechSynthesis.cancel();
+
+      let text = "";
+
+      if (!appointments || appointments.length === 0) {
+        text = "Der er ingen aftaler i dag.";
+      } else {
+        text = "I dag har du følgende aftaler. ";
+
+        appointments.forEach(item => {
+          text += "Klokken " + item.start.replace(":", ".") + ". " + item.title + ". ";
+        });
+      }
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "da-DK";
+      utterance.rate = 0.85;
+      utterance.pitch = 1;
+
+      speechSynthesis.speak(utterance);
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    updateClockAndDate();
+    setInterval(updateClockAndDate, 1000);
+
+    setInterval(() => {
+      if (document.getElementById("messagesPanel").classList.contains("open")) {
+        loadAppointments(false);
+      }
+    }, 60000);
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js");
+      });
+    }
+  </script>
+
+</body>
+</html>
